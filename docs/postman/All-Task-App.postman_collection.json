@@ -1,13 +1,23 @@
 {
   "info": {
     "name": "All Task App - TODO API",
-    "description": "Colección para probar la API del backend All Task App (TODO Tasks).\n\nFlujo sugerido:\n1. Ejecutar 'Crear tarea' → guarda el id en la variable de colección `taskId`.\n2. Ejecutar 'Agregar ítem' → guarda el id en `itemId`.\n3. Probar el resto de endpoints en cualquier orden.\n\nVariables:\n- baseUrl: URL base (default http://localhost:8080/api)\n- taskId: id de una tarea (se setea automáticamente al crearla)\n- itemId: id de un ítem (se setea automáticamente al crearlo)",
+    "description": "Colección para probar la API del backend All Task App (TODO Tasks).\n\nFlujo sugerido:\n1. Ejecutar 'Crear tarea' → guarda el id en la variable de colección `taskId`.\n2. Ejecutar 'Agregar ítem' → guarda el id en `itemId`.\n3. Probar el resto de endpoints en cualquier orden.\n\nVariables:\n- baseUrl: URL base activa (por defecto apunta a producción).\n- baseUrlProd: http://18.188.170.6:8080/api\n- baseUrlLocal: http://localhost:8080/api\n- taskId: id de una tarea (se setea automáticamente al crearla)\n- itemId: id de un ítem (se setea automáticamente al crearlo)\n\nPara alternar entre entornos, edita la variable `baseUrl` y copia el valor de `baseUrlProd` o `baseUrlLocal`.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "9a2f0e3c-7b11-4a26-9b36-all-task-app-001"
   },
   "variable": [
     {
       "key": "baseUrl",
+      "value": "http://18.188.170.6:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "baseUrlProd",
+      "value": "http://18.188.170.6:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "baseUrlLocal",
       "value": "http://localhost:8080/api",
       "type": "string"
     },

@@ -58,7 +58,10 @@ Cualquier transición no permitida devuelve **409 Conflict**.
 
 ## Endpoints principales
 
-Base path: `http://localhost:8080/api`
+Base path (según entorno):
+
+- Producción: `http://18.188.170.6:8080/api`
+- Local: `http://localhost:8080/api`
 
 ### Tareas
 | Método | Endpoint                       | Descripción                                |
@@ -211,10 +214,22 @@ gracias a `spring.jpa.hibernate.ddl-auto=update`.
 
 ## Probar la API
 
-Dentro de `docs/` hay dos colecciones listas para usar:
+Dentro de `docs/postman/` está la colección lista para usar:
 
-- **Postman:** `docs/postman/All-Task-App.postman_collection.json`
-  (Importar → la variable `baseUrl` ya está en `http://localhost:8080/api`.
-  Al ejecutar *Crear tarea* guarda automáticamente `taskId` e `itemId` en las
-  variables de la colección para encadenar las demás requests.)
+**`All-Task-App.postman_collection.json`**
+
+Al importarla en Postman vas a tener tres variables de URL:
+
+| Variable       | Valor                                  | Uso                              |
+|----------------|----------------------------------------|----------------------------------|
+| `baseUrl`      | `http://18.188.170.6:8080/api`         | URL activa (por defecto: prod)   |
+| `baseUrlProd`  | `http://18.188.170.6:8080/api`         | Referencia del entorno productivo|
+| `baseUrlLocal` | `http://localhost:8080/api`            | Referencia del entorno local     |
+
+Para alternar entre entornos basta con editar el valor de `baseUrl` y pegarle
+el contenido de `baseUrlProd` o `baseUrlLocal`.
+
+Al ejecutar *Crear tarea*, los scripts de test guardan automáticamente
+`taskId` e `itemId` en las variables de la colección para encadenar las
+demás requests sin copiar nada a mano.
 

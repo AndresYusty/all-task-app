@@ -1,24 +1,3 @@
-# Plan de trabajo y Uso de asistencia con IA
-
-Notas que armé antes y durante el desarrollo del backend de la prueba técnica.
-Lo uso como hoja de ruta personal para no dejar historias de usuario por fuera
-y para tener claras las decisiones técnicas antes de empezar a codificar.
-
----
-
-## Lo que hay que construir
-
-Una API tipo TODO Tasks. Solo backend. Tiene que permitir:
-
-- Crear, editar, eliminar y consultar tareas.
-- Avisar cuando una tarea programada ya pasó su fecha.
-- Manejar ítems checkeables dentro de cada tarea.
-
-La prueba exige trabajar con apoyo de IA y dejar evidencia. Eso lo llevo en
-esta misma carpeta `.plan/` (aquí el plan, en `prompts.md` los prompts que
-fui usando). Más abajo explico cómo fue ese trabajo con IA en concreto.
-
----
 
 ## Stack
 
@@ -55,7 +34,7 @@ La idea es que cada capa tenga una sola responsabilidad y no se salten capas
 
 ---
 
-## Cómo voy a atacarlo (orden de trabajo)
+## Cómo voy a atacarlo
 
 1. **Dependencias y configuración base.**
    `pom.xml` con los starters, `application.properties` con MySQL, puerto y
