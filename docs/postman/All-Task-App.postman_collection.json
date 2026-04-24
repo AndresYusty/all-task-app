@@ -1,0 +1,420 @@
+{
+  "info": {
+    "name": "All Task App - TODO API",
+    "description": "Colección para probar la API del backend All Task App (TODO Tasks).\n\nFlujo sugerido:\n1. Ejecutar 'Crear tarea' → guarda el id en la variable de colección `taskId`.\n2. Ejecutar 'Agregar ítem' → guarda el id en `itemId`.\n3. Probar el resto de endpoints en cualquier orden.\n\nVariables:\n- baseUrl: URL base (default http://localhost:8080/api)\n- taskId: id de una tarea (se setea automáticamente al crearla)\n- itemId: id de un ítem (se setea automáticamente al crearlo)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "9a2f0e3c-7b11-4a26-9b36-all-task-app-001"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "taskId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "itemId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Tareas",
+      "item": [
+        {
+          "name": "Crear tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "if (json && json.id) {",
+                  "    pm.collectionVariables.set('taskId', json.id);",
+                  "    console.log('taskId guardado:', json.id);",
+                  "    if (json.items && json.items.length > 0) {",
+                  "        pm.collectionVariables.set('itemId', json.items[0].id);",
+                  "        console.log('itemId guardado:', json.items[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Preparar informe\",\n  \"description\": \"Informe mensual de ventas\",\n  \"executionDate\": \"2026-04-25T08:00:00\",\n  \"items\": [\n    { \"description\": \"Revisar datos\",     \"completed\": false },\n    { \"description\": \"Consolidar cifras\",  \"completed\": false },\n    { \"description\": \"Enviar reporte\",     \"completed\": false }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"]
+            }
+          }
+        },
+        {
+          "name": "Editar tarea (PUT completo)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Preparar informe (actualizado)\",\n  \"description\": \"Ahora con validación con gerencia\",\n  \"executionDate\": \"2026-04-26T10:00:00\",\n  \"items\": [\n    { \"description\": \"Revisar datos\",       \"completed\": true  },\n    { \"description\": \"Validar con gerencia\", \"completed\": false }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}"]
+            }
+          }
+        },
+        {
+          "name": "Consultar tarea por id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}"]
+            }
+          }
+        },
+        {
+          "name": "Listar paginado (default)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks?page=0&size=10&sort=executionDate,asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sort", "value": "executionDate,asc" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar por texto (q)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks?q=informe&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"],
+              "query": [
+                { "key": "q", "value": "informe" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por estado",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks?status=PROGRAMADO&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"],
+              "query": [
+                { "key": "status", "value": "PROGRAMADO" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por rango de fecha",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks?from=2026-01-01T00:00:00&to=2026-12-31T23:59:59",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"],
+              "query": [
+                { "key": "from", "value": "2026-01-01T00:00:00" },
+                { "key": "to", "value": "2026-12-31T23:59:59" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Solo vencidas (overdueOnly=true)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks?overdueOnly=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"],
+              "query": [
+                { "key": "overdueOnly", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Tareas pendientes (PROGRAMADO)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "pending"]
+            }
+          }
+        },
+        {
+          "name": "Tareas vencidas (overdue)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/overdue",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "overdue"]
+            }
+          }
+        },
+        {
+          "name": "Cambiar estado → EN_EJECUCION",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"status\": \"EN_EJECUCION\" }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Cambiar estado → FINALIZADA",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"status\": \"FINALIZADA\" }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Cambiar estado → CANCELADA",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"status\": \"CANCELADA\" }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar tarea",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ítems checkeables",
+      "item": [
+        {
+          "name": "Agregar ítem",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "if (json && json.id) {",
+                  "    pm.collectionVariables.set('itemId', json.id);",
+                  "    console.log('itemId guardado:', json.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Enviar correo de seguimiento\",\n  \"completed\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "items"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar ítem",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Enviar correo de seguimiento (urgente)\",\n  \"completed\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/items/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "items", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Toggle ítem → completado",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"completed\": true }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/items/{{itemId}}/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "items", "{{itemId}}", "toggle"]
+            }
+          }
+        },
+        {
+          "name": "Toggle ítem → pendiente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"completed\": false }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/items/{{itemId}}/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "items", "{{itemId}}", "toggle"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar ítem",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/items/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "items", "{{itemId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Casos de error",
+      "item": [
+        {
+          "name": "404 - Tarea inexistente",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "999999"]
+            }
+          }
+        },
+        {
+          "name": "400 - Crear sin título",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Falta el título\",\n  \"executionDate\": \"2026-05-01T09:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"]
+            }
+          }
+        },
+        {
+          "name": "409 - Transición inválida (FINALIZADA → PROGRAMADO)",
+          "description": "Para reproducir: primero finaliza una tarea y luego intenta regresarla a PROGRAMADO.",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"status\": \"PROGRAMADO\" }"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/{{taskId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "{{taskId}}", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
