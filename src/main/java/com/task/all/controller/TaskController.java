@@ -10,6 +10,7 @@ import com.task.all.model.dto.TaskStatusUpdateDto;
 import com.task.all.model.entity.TaskStatus;
 import com.task.all.service.TaskService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,7 @@ import java.util.List;
  * - Vistas especiales: pendientes y vencidas
  * - Gestión de ítems checkeables
  */
+@Tag(name = "Tareas", description = "CRUD, búsqueda, estados, vistas y checklist")
 @RestController
 @RequestMapping("/v1/tasks")
 public class TaskController {
