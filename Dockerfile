@@ -27,7 +27,8 @@ USER spring:spring
 # El nombre del JAR viene del artifactId+version del pom.
 COPY --from=build /workspace/target/all-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8081
+# Puerto por defecto de Spring Boot.
+EXPOSE 8080
 
 # Los flags ayudan a que la JVM respete los límites del contenedor.
 ENTRYPOINT ["java", \

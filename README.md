@@ -58,7 +58,7 @@ Cualquier transición no permitida devuelve **409 Conflict**.
 
 ## Endpoints principales
 
-Base path: `http://localhost:8081/api`
+Base path: `http://localhost:8080/api`
 
 ### Tareas
 | Método | Endpoint                       | Descripción                                |
@@ -97,7 +97,7 @@ El campo `overdue` del response indica si la tarea está **pendiente por ejecuta
 
 ### Crear una tarea
 ```bash
-curl -X POST http://localhost:8081/api/v1/tasks \
+curl -X POST http://localhost:8080/api/v1/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Preparar informe",
@@ -113,19 +113,19 @@ curl -X POST http://localhost:8081/api/v1/tasks \
 
 ### Cambiar estado
 ```bash
-curl -X PATCH http://localhost:8081/api/v1/tasks/1/status \
+curl -X PATCH http://localhost:8080/api/v1/tasks/1/status \
   -H "Content-Type: application/json" \
   -d '{ "status": "EN_EJECUCION" }'
 ```
 
 ### Buscar con paginación
 ```bash
-curl "http://localhost:8081/api/v1/tasks?q=informe&status=PROGRAMADO&page=0&size=10&sort=executionDate,asc"
+curl "http://localhost:8080/api/v1/tasks?q=informe&status=PROGRAMADO&page=0&size=10&sort=executionDate,asc"
 ```
 
 ### Toggle de ítem
 ```bash
-curl -X PATCH http://localhost:8081/api/v1/tasks/1/items/3/toggle \
+curl -X PATCH http://localhost:8080/api/v1/tasks/1/items/3/toggle \
   -H "Content-Type: application/json" \
   -d '{ "completed": true }'
 ```
@@ -147,14 +147,16 @@ Desde la raíz del proyecto (`all-task-app/`):
 docker compose up --build
 ```
 
-Esto levanta dos contenedores:
+Esto levanta dos contenedores en la misma red **`all-task-net`** (bridge):
 
-| Servicio | Imagen         | Puerto en host | Notas                                   |
-|----------|----------------|----------------|-----------------------------------------|
-| mysql    | `mysql:8.4`    | `3307`         | Para no chocar con un MySQL local en 3306 |
-| app      | build local    | `8081`         | API Spring Boot                          |
+| Servicio | Imagen         | Puerto en host | Hostname interno | Notas                                     |
+|----------|----------------|----------------|------------------|-------------------------------------------|
+| mysql    | `mysql:8.4`    | `3306`         | `mysql`          | Puerto default. Detén cualquier MySQL local que esté en 3306 |
+| app      | build local    | `8080`         | `app`            | API Spring Boot                           |
 
-La API queda disponible en `http://localhost:8081/api`.
+
+
+La API queda disponible en `http://localhost:8080/api`.
 
 Para parar todo: `docker compose down`
 Para borrar también los datos de MySQL: `docker compose down -v`
@@ -162,7 +164,7 @@ Para borrar también los datos de MySQL: `docker compose down -v`
 Si quieres conectarte con **MySQL Workbench** al contenedor:
 
 - Host: `localhost`
-- Puerto: `3307`
+- Puerto: `3306`
 - Usuario: `todo_user`
 - Password: `todo_pass`
 - Schema: `todo_db`
@@ -200,7 +202,7 @@ mvnw.cmd spring-boot:run
 ./mvnw spring-boot:run
 ```
 
-La API queda expuesta en `http://localhost:8081/api`.
+La API queda expuesta en `http://localhost:8080/api`.
 
 Las tablas (`tasks`, `checklist_items`) las crea Hibernate automáticamente
 gracias a `spring.jpa.hibernate.ddl-auto=update`.
@@ -212,7 +214,7 @@ gracias a `spring.jpa.hibernate.ddl-auto=update`.
 Dentro de `docs/` hay dos colecciones listas para usar:
 
 - **Postman:** `docs/postman/All-Task-App.postman_collection.json`
-  (Importar → la variable `baseUrl` ya está en `http://localhost:8081/api`.
+  (Importar → la variable `baseUrl` ya está en `http://localhost:8080/api`.
   Al ejecutar *Crear tarea* guarda automáticamente `taskId` e `itemId` en las
   variables de la colección para encadenar las demás requests.)
 

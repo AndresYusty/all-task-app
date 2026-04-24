@@ -10,11 +10,14 @@ services:
       MYSQL_USER: todo_user
       MYSQL_PASSWORD: todo_pass
     ports:
-      # Expongo el 3307 en el host para no chocar con un MySQL local en 3306.
-      # Desde MySQL Workbench: host=localhost puerto=3307 user=todo_user pass=todo_pass
-      - "3307:3306"
+      # Puerto por defecto de MySQL. Si tienes un MySQL local en 3306, detenlo
+      # antes de levantar el contenedor para evitar conflicto.
+      # Desde MySQL Workbench: host=localhost puerto=3306 user=todo_user pass=todo_pass
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - all-task-net
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -32,14 +35,21 @@ services:
       mysql:
         condition: service_healthy
     environment:
-      # Estas variables sobreescriben application.properties sin tocar el archivo.
+      # Dentro de la misma red, la app resuelve el host de MySQL por el nombre
+      # del servicio: "mysql". No se usa localhost.
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/todo_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: todo_user
       SPRING_DATASOURCE_PASSWORD: todo_pass
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SERVER_PORT: 8081
     ports:
-      - "8081:8081"
+      - "8080:8080"
+    networks:
+      - all-task-net
+
+networks:
+  all-task-net:
+    name: all-task-net
+    driver: bridge
 
 volumes:
   mysql_data:
