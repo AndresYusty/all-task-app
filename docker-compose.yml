@@ -1,0 +1,45 @@
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: all-task-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: todo_user
+      MYSQL_PASSWORD: todo_pass
+    ports:
+      # Expongo el 3307 en el host para no chocar con un MySQL local en 3306.
+      # Desde MySQL Workbench: host=localhost puerto=3307 user=todo_user pass=todo_pass
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: all-task-app:latest
+    container_name: all-task-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Estas variables sobreescriben application.properties sin tocar el archivo.
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/todo_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: todo_user
+      SPRING_DATASOURCE_PASSWORD: todo_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+
+volumes:
+  mysql_data:

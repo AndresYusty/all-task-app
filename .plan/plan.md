@@ -11,11 +11,6 @@ y para tener claras las decisiones técnicas antes de empezar a codificar.
 Una API tipo TODO Tasks. Solo backend. Tiene que permitir:
 
 - Crear, editar, eliminar y consultar tareas.
-- Listarlas paginadas.
-- Buscarlas (al menos por título/descripción y estado).
-- Manejar el ciclo de vida del estado: Programado → En Ejecución → Finalizada,
-  con Cancelada como salida en cualquier momento.
-- Ver qué tareas están pendientes por ejecutar.
 - Avisar cuando una tarea programada ya pasó su fecha.
 - Manejar ítems checkeables dentro de cada tarea.
 
